@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Claudio Saldivia San Martín — Portfolio</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --fg: #f0f0f0;
+    --fg-muted: #666;
+    --border: rgba(255,255,255,0.12);
+    --serif: 'Times New Roman', Times, serif;
+    --sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  body { background: var(--bg); color: var(--fg); font-family: var(--sans); min-height: 100vh; overflow-x: hidden; }
+
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 1.5rem 2.5rem; background: rgba(10,10,10,0.85); backdrop-filter: blur(10px); }
+
+  .nav-logo { font-family: var(--sans); font-size: 1rem; font-style: normal; letter-spacing: 0.04em; color: var(--fg); display: flex; align-items: center; gap: 0.5rem; opacity: 0.7; }
+
+  @keyframes blink-green {
+    0%, 100% { opacity: 1; box-shadow: 0 0 6px #00ff00; }
+    50% { opacity: 0.2; box-shadow: none; }
+  }
+  .green-dot { width: 10px; height: 10px; border-radius: 2px; background: #00ff00; animation: blink-green 1.4s ease-in-out infinite; flex-shrink: 0; }
+
+  .nav-cta { font-size: 0.8rem; letter-spacing: 0.04em; opacity: 0.7; transition: opacity 0.2s; text-decoration: none; color: var(--fg); }
+  .nav-cta:hover { opacity: 1; }
+
+  .hero { padding: 7rem 2.5rem 5rem; max-width: 900px; }
+  .hero-name { font-family: var(--serif); font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 400; font-style: italic; line-height: 1.05; margin-bottom: 2.5rem; }
+  .portfolio-label { display: block; margin-top: 1.4em; font-style: normal; font-size: 0.45em; letter-spacing: 0.12em; text-transform: uppercase; font-family: var(--sans); opacity: 0.5; }
+  .hero-desc { font-family: var(--serif); font-size: clamp(1.3rem, 2.8vw, 1.9rem); font-weight: 400; font-style: italic; line-height: 1.35; max-width: 720px; }
+
+  .fade-left { opacity: 0; transform: translateX(-18px); transition: opacity 0.9s ease, transform 0.9s ease; }
+  .fade-left.visible { opacity: 1; transform: translateX(0); }
+  .delay-1 { transition-delay: 0.15s; }
+  .delay-2 { transition-delay: 0.3s; }
+  .delay-3 { transition-delay: 0.45s; }
+
+  .ticker { overflow: hidden; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 0.9rem 0; white-space: nowrap; }
+  .ticker-inner { display: inline-flex; gap: 3rem; animation: ticker 18s linear infinite; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-muted); }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border-bottom: 1px solid var(--border); }
+  .grid-item { position: relative; background: var(--bg); aspect-ratio: 4/3; overflow: hidden; cursor: pointer; }
+  .grid-item.tall { grid-row: span 2; aspect-ratio: unset; }
+  .grid-item:hover .item-overlay { opacity: 1; }
+
+  .item-overlay { position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; display: flex; align-items: flex-end; padding: 1.5rem; }
+  .item-label { color: #fff; }
+  .item-label .subtitle { font-size: 0.7rem; letter-spacing: 0.06em; text-transform: uppercase; opacity: 0.8; display: block; margin-bottom: 0.2rem; }
+  .item-label .title { font-family: var(--serif); font-size: 1.1rem; font-style: italic; }
+
+  .coming-soon { position: absolute; inset: 0; background: #1a1a1a; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fg-muted); }
+
+  @keyframes heartbeat {
+    0%   { transform: scale(1); }
+    14%  { transform: scale(1.03); }
+    28%  { transform: scale(1); }
+    42%  { transform: scale(1.02); }
+    56%  { transform: scale(1); }
+    100% { transform: scale(1); }
+  }
+  .pulse { animation: heartbeat 2.4s ease-in-out infinite; transform-origin: center; }
+
+  img.cover { width: 100%; height: 100%; object-fit: cover; display: block; position: absolute; inset: 0; }
+  a.grid-link { display: block; position: absolute; inset: 0; z-index: 2; }
+
+  footer { padding: 5rem 2.5rem 3rem; display: flex; justify-content: space-between; align-items: flex-start; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 2rem; }
+  .footer-left h2 { font-family: var(--serif); font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 400; font-style: italic; line-height: 1.1; margin-bottom: 1rem; max-width: 420px; }
+  .footer-email { font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; opacity: 0.6; margin-bottom: 1rem; }
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+  .footer-links li a { font-size: 0.8rem; letter-spacing: 0.04em; text-transform: uppercase; text-decoration: none; color: var(--fg); opacity: 0.55; transition: opacity 0.2s; display: flex; align-items: center; gap: 0.4rem; }
+  .footer-links li a:hover { opacity: 1; }
+  .footer-bottom { padding: 1.5rem 2.5rem; display: flex; justify-content: space-between; font-size: 0.7rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--fg-muted); border-top: 1px solid var(--border); }
+
+  .wsp-btn { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.2rem; background: #25D366; color: #fff; text-decoration: none; padding: 0.7rem 1.4rem; border-radius: 4px; font-size: 0.85rem; letter-spacing: 0.04em; font-family: var(--sans); transition: opacity 0.2s; }
+  .wsp-btn:hover { opacity: 0.85; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo">
+    <span class="green-dot"></span>
+    Agenda Abierta
+  </span>
+  <a href="https://wa.link/kvkd0a" target="_blank" class="nav-cta">⮑ Start a project</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1 class="hero-name">
+    <span class="fade-left">Claudio</span><br>
+    <span class="fade-left delay-1">Saldivia</span><br>
+    <span class="fade-left delay-2">San Martín</span>
+    <span class="portfolio-label fade-left delay-3">¿Qué idea tienes?</span>
+  </h1>
+  <p class="hero-desc fade-left delay-3">Diseñador Gráfico con 14 años de trayectoria en Branding y comunicación visual corporativa, especializado en Dirección de Arte y creación estratégica de contenido para canales digitales.</p>
+</section>
+
+<!-- TICKER -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span>Diseñador Gráfico</span><span>·</span>
+    <span>Branding</span><span>·</span>
+    <span>Dirección de Arte</span><span>·</span>
+    <span>Redes Sociales</span><span>·</span>
+    <span>Diseño Web</span><span>·</span>
+    <span>Fotografía</span><span>·</span>
+    <span>Identidad Visual</span><span>·</span>
+    <span>Diseñador Gráfico</span><span>·</span>
+    <span>Branding</span><span>·</span>
+    <span>Dirección de Arte</span><span>·</span>
+    <span>Redes Sociales</span><span>·</span>
+    <span>Diseño Web</span><span>·</span>
+    <span>Fotografía</span><span>·</span>
+    <span>Identidad Visual</span><span>·</span>
+  </div>
+</div>
+
+<!-- GRID -->
+<div class="grid" id="grid-view">
+
+  <!-- FILA 1-2 -->
+  <div class="grid-item tall">
+    <img class="cover" src="https://i.imgur.com/qa43D52.jpeg">
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+  </div>
+
+  <div class="grid-item pulse">
+    <img class="cover" src="https://i.imgur.com/nw15KjG.png">
+    <a class="grid-link" href="https://www.instagram.com/graphicpartners/" target="_blank"></a>
+    <div class="item-overlay" style="background:rgba(0,0,0,0.3);pointer-events:none;">
+      <div class="item-label">
+        <span class="subtitle">Conoce</span>
+        <span class="title">Graphic Partners Espacio Creativo ⮑</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-item">
+    <img class="cover" src="https://i.imgur.com/AHVSfxm.png">
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+    <div class="item-overlay" style="background:rgba(0,0,0,0.3);pointer-events:none;">
+      <div class="item-label">
+        <span class="subtitle">Manejo de redes</span>
+        <span class="title">¿Qué idea tienes? ⮑</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-item">
+    <img class="cover" src="https://i.imgur.com/w0g844W.jpeg">
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+  </div>
+
+  <div class="grid-item">
+    <img class="cover" src="https://i.imgur.com/dyIdl6R.jpeg">
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+  </div>
+
+  <!-- FILA 3 -->
+  <div class="grid-item">
+    <img class="cover" src="https://i.imgur.com/fCCxUpJ.jpeg">
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+    <div class="item-overlay" style="background:rgba(0,0,0,0.3);pointer-events:none;">
+      <div class="item-label">
+        <span class="subtitle">Diseño Web</span>
+        <span class="title">Dibujemos ⮑</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-item">
+    <img class="cover" src="https://i.imgur.com/6bMef0O.jpeg">
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+    <div class="item-overlay" style="background:rgba(0,0,0,0.3);pointer-events:none;">
+      <div class="item-label">
+        <span class="subtitle">Fotografía</span>
+        <span class="title">Dirección fotográfica ⮑</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-item">
+    <img class="cover" src="https://i.imgur.com/znMSSnz.jpeg">
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+    <div class="item-overlay" style="background:rgba(0,0,0,0.3);pointer-events:none;">
+      <div class="item-label">
+        <span class="subtitle">Logotipos</span>
+        <span class="title">Identidad de marca ⮑</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILA 4: Videos Vimeo -->
+  <div class="grid-item">
+    <iframe src="https://player.vimeo.com/video/1197943424?autoplay=1&muted=1&loop=1&background=1" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+  </div>
+
+  <div class="grid-item">
+    <iframe src="https://player.vimeo.com/video/1197945175?autoplay=1&muted=1&loop=1&background=1" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+  </div>
+
+  <div class="grid-item">
+    <iframe src="https://player.vimeo.com/video/1197942495?autoplay=1&muted=1&loop=1&background=1" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+  </div>
+
+  <!-- FILA 5 -->
+  <div class="grid-item">
+    <img class="cover" src="https://i.imgur.com/rWh6Pxw.jpeg">
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+    <div class="item-overlay" style="background:rgba(0,0,0,0.3);pointer-events:none;">
+      <div class="item-label">
+        <span class="subtitle">Tela Canvas</span>
+        <span class="title">Impresión digital ⮑</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-item">
+    <img class="cover" src="https://i.imgur.com/GLRRxRQ.jpeg">
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+    <div class="item-overlay" style="background:rgba(0,0,0,0.3);pointer-events:none;">
+      <div class="item-label">
+        <span class="subtitle">DTF</span>
+        <span class="title">Diseños poleras ⮑</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-item">
+    <img class="cover" src="https://i.imgur.com/Vh9z7pD.jpeg">
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+    <div class="item-overlay" style="background:rgba(0,0,0,0.3);pointer-events:none;">
+      <div class="item-label">
+        <span class="subtitle">Rollers</span>
+        <span class="title">Impresión Digital ⮑</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILA 6: Videos Vimeo -->
+  <div class="grid-item">
+    <iframe src="https://player.vimeo.com/video/1197945859?autoplay=1&muted=1&loop=1&background=1" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+  </div>
+
+  <div class="grid-item">
+    <iframe src="https://player.vimeo.com/video/1197947063?autoplay=1&muted=1&loop=1&background=1" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+  </div>
+
+  <div class="grid-item">
+    <iframe src="https://player.vimeo.com/video/1197952927?autoplay=1&muted=1&loop=1&background=1" style="position:absolute;inset:0;width:100%;height:100%;border:none;" allow="autoplay; fullscreen" allowfullscreen></iframe>
+    <a class="grid-link" href="https://wa.link/kvkd0a" target="_blank"></a>
+  </div>
+
+</div>
+
+<!-- LOGOS CLIENTES -->
+<div style="width:100%;background:#000;border-top:1px solid var(--border);display:flex;align-items:center;overflow:hidden;min-height:90px;">
+  <!-- Texto fijo izquierda -->
+  <div style="flex-shrink:0;padding:0 2.5rem;border-right:1px solid var(--border);min-width:220px;">
+    <p style="font-family:'Times New Roman',Times,serif;font-size:clamp(1.05rem,1.4vw,1.25rem);font-style:italic;font-weight:400;color:rgba(240,240,240,0.35);line-height:1.4;letter-spacing:0.01em;">Mi experiencia</p>
+  </div>
+  <!-- Logos animados -->
+  <div style="flex:1;overflow:hidden;padding:1.5rem 0;">
+    <div style="display:inline-flex;align-items:center;gap:4rem;animation:logos-ticker 14s linear infinite;white-space:nowrap;">
+      <img src="https://i.imgur.com/OuB9KCk.png" style="height:28px;object-fit:contain;opacity:0.4;filter:grayscale(100%);transition:opacity 0.3s,filter 0.3s;flex-shrink:0;" onmouseover="this.style.opacity='1';this.style.filter='grayscale(0%)'" onmouseout="this.style.opacity='0.4';this.style.filter='grayscale(100%)'">
+      <img src="https://i.imgur.com/rzJhphT.png" style="height:28px;object-fit:contain;opacity:0.4;filter:grayscale(100%);transition:opacity 0.3s,filter 0.3s;flex-shrink:0;" onmouseover="this.style.opacity='1';this.style.filter='grayscale(0%)'" onmouseout="this.style.opacity='0.4';this.style.filter='grayscale(100%)'">
+      <img src="https://i.imgur.com/Mr3FbKI.png" style="height:28px;object-fit:contain;opacity:0.4;filter:grayscale(100%);transition:opacity 0.3s,filter 0.3s;flex-shrink:0;" onmouseover="this.style.opacity='1';this.style.filter='grayscale(0%)'" onmouseout="this.style.opacity='0.4';this.style.filter='grayscale(100%)'">
+      <img src="https://i.imgur.com/1ZC0CMB.png" style="height:28px;object-fit:contain;opacity:0.4;filter:grayscale(100%);transition:opacity 0.3s,filter 0.3s;flex-shrink:0;" onmouseover="this.style.opacity='1';this.style.filter='grayscale(0%)'" onmouseout="this.style.opacity='0.4';this.style.filter='grayscale(100%)'">
+      <!-- duplicado para loop -->
+      <img src="https://i.imgur.com/OuB9KCk.png" style="height:28px;object-fit:contain;opacity:0.4;filter:grayscale(100%);transition:opacity 0.3s,filter 0.3s;flex-shrink:0;" onmouseover="this.style.opacity='1';this.style.filter='grayscale(0%)'" onmouseout="this.style.opacity='0.4';this.style.filter='grayscale(100%)'">
+      <img src="https://i.imgur.com/rzJhphT.png" style="height:28px;object-fit:contain;opacity:0.4;filter:grayscale(100%);transition:opacity 0.3s,filter 0.3s;flex-shrink:0;" onmouseover="this.style.opacity='1';this.style.filter='grayscale(0%)'" onmouseout="this.style.opacity='0.4';this.style.filter='grayscale(100%)'">
+      <img src="https://i.imgur.com/Mr3FbKI.png" style="height:28px;object-fit:contain;opacity:0.4;filter:grayscale(100%);transition:opacity 0.3s,filter 0.3s;flex-shrink:0;" onmouseover="this.style.opacity='1';this.style.filter='grayscale(0%)'" onmouseout="this.style.opacity='0.4';this.style.filter='grayscale(100%)'">
+      <img src="https://i.imgur.com/1ZC0CMB.png" style="height:28px;object-fit:contain;opacity:0.4;filter:grayscale(100%);transition:opacity 0.3s,filter 0.3s;flex-shrink:0;" onmouseover="this.style.opacity='1';this.style.filter='grayscale(0%)'" onmouseout="this.style.opacity='0.4';this.style.filter='grayscale(100%)'">
+    </div>
+  </div>
+</div>
+<style>
+@keyframes logos-ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+</style>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <h2>Trabajemos Juntos</h2>
+    <p class="footer-email">Para proyectos ⮑ claudiosaldiviasm@gmail.com</p>
+    <a href="https://wa.link/kvkd0a" target="_blank" class="wsp-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.118 1.522 5.855L.057 23.143a.75.75 0 0 0 .943.899l5.344-1.965A11.945 11.945 0 0 0 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.9 0-3.68-.523-5.21-1.433l-.374-.223-3.878 1.427 1.376-3.768-.244-.389A9.956 9.956 0 0 1 2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/></svg>
+      Escríbeme por WhatsApp
+    </a>
+  </div>
+  <ul class="footer-links">
+    <li><a href="https://www.linkedin.com/in/claudio-saldivia-san-mart%C3%ADn-12335468/" target="_blank">⮑ LinkedIn</a></li>
+    <li><a href="https://www.instagram.com/graphicpartners/" target="_blank">⮑ Instagram</a></li>
+  </ul>
+</footer>
+
+<div class="footer-bottom">
+  <span>Osorno, ©2026</span>
+  <div style="display:flex;gap:2rem;">
+    <span>Aviso legal</span>
+    <span>Privacidad</span>
+  </div>
+</div>
+
+<script>
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.fade-left').forEach(el => el.classList.add('visible'));
+  });
+</script>
+</body>
+</html>
